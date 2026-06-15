@@ -483,13 +483,13 @@ function CTA() {
         </p>
         <div className="mt-8 flex flex-wrap justify-center gap-3">
           <a
-            href="tel:+254796330157"
+            href="tel:+254720162463"
             className="inline-flex items-center gap-2 rounded-xl bg-white px-6 py-3.5 text-sm font-bold text-isp-700 transition-transform hover:scale-[1.03]"
           >
-            <Phone className="h-4 w-4" /> Call 0796 330 157
+            <Phone className="h-4 w-4" /> Call 0720 162 463
           </a>
           <a
-            href="mailto:info@eyefi.co.ke"
+            href="mailto:njarambadenis@gmail.com"
             className="inline-flex items-center gap-2 rounded-xl border border-white/30 px-6 py-3.5 text-sm font-bold text-white transition-colors hover:bg-white/10"
           >
             <Mail className="h-4 w-4" /> Email us
@@ -516,8 +516,8 @@ function Footer() {
           <h4 className="text-sm font-bold text-isp-900">Get in touch</h4>
           <ul className="mt-4 space-y-2.5 text-sm text-[#6b7280]">
             <li className="flex items-center gap-2"><MapPin className="h-4 w-4 text-isp-600" /> Eldoret · Kitale · Nyahururu · Thika</li>
-            <li className="flex items-center gap-2"><Phone className="h-4 w-4 text-isp-600" /> 0796 330 157</li>
-            <li className="flex items-center gap-2"><Mail className="h-4 w-4 text-isp-600" /> info@eyefi.co.ke</li>
+            <li className="flex items-center gap-2"><Phone className="h-4 w-4 text-isp-600" /> 0720 162 463</li>
+            <li className="flex items-center gap-2"><Mail className="h-4 w-4 text-isp-600" /> njarambadenis@gmail.com</li>
           </ul>
         </div>
       </div>
