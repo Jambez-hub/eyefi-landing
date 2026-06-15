@@ -1,6 +1,6 @@
-# Eyecell — Public Landing Page
+# Eyefi — Public Landing Page
 
-Marketing landing page for Eyecell ISP. Built with React + Vite + Tailwind CSS v4.
+Marketing landing page for Eyefi ISP. Built with React + Vite + Tailwind CSS v4.
 
 ## Dev
 

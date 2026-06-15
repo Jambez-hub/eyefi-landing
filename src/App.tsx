@@ -185,7 +185,7 @@ function Features() {
   return (
     <section id="features" className="mx-auto max-w-6xl px-5 py-24">
       <SectionHead
-        tag="Why Eyecell"
+        tag="Why Eyefi"
         title="Built for the way you connect"
         sub="Everything you need for fast, dependable internet — backed by a team that lives here too."
       />
@@ -350,7 +350,7 @@ function Coverage() {
           <SectionHead
             align="left"
             tag="Coverage"
-            title="Is Eyecell in your neighbourhood?"
+            title="Is Eyefi in your neighbourhood?"
             sub="We're expanding fast across Eldoret, Kitale, Nyahururu and Thika. Type your area to check availability."
           />
           <div className="mt-7 flex flex-col gap-3 sm:flex-row">
@@ -489,7 +489,7 @@ function CTA() {
             <Phone className="h-4 w-4" /> Call 0796 330 157
           </a>
           <a
-            href="mailto:info@eyecell.co.ke"
+            href="mailto:info@eyefi.co.ke"
             className="inline-flex items-center gap-2 rounded-xl border border-white/30 px-6 py-3.5 text-sm font-bold text-white transition-colors hover:bg-white/10"
           >
             <Mail className="h-4 w-4" /> Email us
@@ -517,12 +517,12 @@ function Footer() {
           <ul className="mt-4 space-y-2.5 text-sm text-[#6b7280]">
             <li className="flex items-center gap-2"><MapPin className="h-4 w-4 text-isp-600" /> Eldoret · Kitale · Nyahururu · Thika</li>
             <li className="flex items-center gap-2"><Phone className="h-4 w-4 text-isp-600" /> 0796 330 157</li>
-            <li className="flex items-center gap-2"><Mail className="h-4 w-4 text-isp-600" /> info@eyecell.co.ke</li>
+            <li className="flex items-center gap-2"><Mail className="h-4 w-4 text-isp-600" /> info@eyefi.co.ke</li>
           </ul>
         </div>
       </div>
       <div className="border-t border-isp-100 py-5 text-center text-xs text-[#9ca3af]">
-        © {new Date().getFullYear()} Eyecell Eldoret. All rights reserved.
+        © {new Date().getFullYear()} Eyefi Eldoret. All rights reserved.
       </div>
     </footer>
   );
