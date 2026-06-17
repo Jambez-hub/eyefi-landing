@@ -16,7 +16,8 @@ import {
   ArrowRight,
   Star,
 } from "lucide-react";
-import heroImg from "@/assets/hero.jpg";
+import heroImg from "@/assets/hero.png";
+import logoImg from "@/assets/logo.png";
 
 export default function App() {
   return (
@@ -38,11 +39,13 @@ export default function App() {
 function Logo() {
   return (
     <a href="#top" className="flex items-center gap-2.5">
-      <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-isp-500 text-white shadow-card">
-        <Wifi className="h-5 w-5" />
-      </span>
+      <img
+        src={logoImg}
+        alt="Eyefi Telecom Solutions"
+        className="h-10 w-10 rounded-full object-cover"
+      />
       <span className="text-lg font-extrabold text-isp-900">
-        Eye<span className="text-isp-600">cell</span>
+        Eyefi<span className="text-isp-600"> Telecom Solutions</span>
       </span>
     </a>
   );
@@ -522,7 +525,7 @@ function Footer() {
         </div>
       </div>
       <div className="border-t border-isp-100 py-5 text-center text-xs text-[#9ca3af]">
-        © {new Date().getFullYear()} Eyefi Eldoret. All rights reserved.
+        © {new Date().getFullYear()} Eyefi Telecom Solutions. All rights reserved.
       </div>
     </footer>
   );
