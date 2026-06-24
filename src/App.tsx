@@ -17,6 +17,7 @@ import {
   Star,
 } from "lucide-react";
 import heroImg from "@/assets/hero.png";
+import LoginPortal from "./LoginPortal";
 import logoImg from "@/assets/logo.png";
 
 export default function App() {
@@ -76,6 +77,7 @@ function Nav() {
               {label}
             </a>
           ))}
+          <LoginPortal />
         </nav>
         <div className="flex items-center gap-3">
           <a
@@ -105,6 +107,9 @@ function Nav() {
               {label}
             </a>
           ))}
+          <div className="py-2">
+            <LoginPortal />
+          </div>
         </div>
       )}
     </header>
