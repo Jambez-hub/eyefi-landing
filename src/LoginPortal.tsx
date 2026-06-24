@@ -79,7 +79,7 @@ export default function LoginPortal() {
       <div className="fixed inset-0 z-[100] bg-black/50" onClick={() => { setOpen(false); reset(); }} />
 
       {/* Dialog */}
-      <div className="fixed left-1/2 top-1/2 z-[101] w-[calc(100%-2rem)] max-w-md -translate-x-1/2 -translate-y-1/2 rounded-xl bg-white p-6 shadow-xl">
+      <div className="fixed inset-x-4 top-20 z-[101] mx-auto max-w-md rounded-xl bg-white p-6 shadow-xl sm:inset-x-auto sm:left-1/2 sm:top-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2">
         <button
           onClick={() => { setOpen(false); reset(); }}
           className="absolute right-4 top-4 text-gray-400 hover:text-gray-600"
