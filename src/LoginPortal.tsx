@@ -12,6 +12,21 @@ const APP_URLS: Record<string, { url: string; label: string }> = {
 
 type Stage = "login" | "forgot" | "forgot-sent" | "redirecting";
 
+async function apiFetch(path: string, body: object): Promise<Response> {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 15000);
+  try {
+    return await fetch(`${API_URL}${path}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+      signal: controller.signal,
+    });
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 export default function LoginPortal() {
   const [open, setOpen] = useState(false);
   const [email, setEmail] = useState("");
@@ -30,19 +45,16 @@ export default function LoginPortal() {
     e.preventDefault();
     setError(""); setLoading(true);
     try {
-      const res = await fetch(`${API_URL}/auth/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
+      const res = await apiFetch("/auth/login", { email, password });
       const data = await res.json();
       if (!res.ok) { setError(data.detail || "Invalid credentials"); setLoading(false); return; }
       const dest = APP_URLS[data.role as string];
       if (!dest) { setError("Unknown account type."); setLoading(false); return; }
       setDestination(dest); setStage("redirecting"); setLoading(false);
       setTimeout(() => { window.location.href = dest.url; }, 1500);
-    } catch {
-      setError("Cannot reach server. Try again."); setLoading(false);
+    } catch (err: any) {
+      setError(err.name === "AbortError" ? "Request timed out. Check your connection." : "Cannot reach server. Try again.");
+      setLoading(false);
     }
   }
 
@@ -50,16 +62,18 @@ export default function LoginPortal() {
     e.preventDefault();
     setError(""); setLoading(true);
     try {
-      const res = await fetch(`${API_URL}/auth/forgot-password`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
-      });
+      const res = await apiFetch("/auth/forgot-password", { email });
       if (!res.ok) { const d = await res.json(); setError(d.detail || "Something went wrong."); setLoading(false); return; }
       setStage("forgot-sent"); setLoading(false);
-    } catch {
-      setError("Cannot reach server. Try again."); setLoading(false);
+    } catch (err: any) {
+      setError(err.name === "AbortError" ? "Request timed out." : "Cannot reach server. Try again.");
+      setLoading(false);
     }
+  }
+
+  function handleOpenChange(next: boolean) {
+    if (!next) { setOpen(false); reset(); }
+    else setOpen(true);
   }
 
   if (!open) {
@@ -75,19 +89,16 @@ export default function LoginPortal() {
 
   return (
     <>
-      {/* Backdrop */}
-      <div className="fixed inset-0 z-[100] bg-black/50" onClick={() => { setOpen(false); reset(); }} />
+      <div className="fixed inset-0 z-[100] bg-black/50" onClick={() => handleOpenChange(false)} />
 
-      {/* Dialog */}
       <div className="fixed left-1/2 top-24 z-[101] w-[calc(100%-2rem)] max-w-md -translate-x-1/2 rounded-xl bg-white p-6 shadow-xl">
         <button
-          onClick={() => { setOpen(false); reset(); }}
+          onClick={() => handleOpenChange(false)}
           className="absolute right-4 top-4 text-gray-400 hover:text-gray-600"
         >
           <X className="h-5 w-5" />
         </button>
 
-        {/* Login */}
         {stage === "login" && (
           <>
             <h2 className="text-center text-xl font-bold text-isp-900">Sign in to your account</h2>
@@ -119,7 +130,6 @@ export default function LoginPortal() {
           </>
         )}
 
-        {/* Forgot password */}
         {stage === "forgot" && (
           <>
             <h2 className="text-center text-xl font-bold text-isp-900">Reset your password</h2>
@@ -143,7 +153,6 @@ export default function LoginPortal() {
           </>
         )}
 
-        {/* Reset sent */}
         {stage === "forgot-sent" && (
           <div className="flex flex-col items-center gap-4 py-6">
             <div className="flex h-14 w-14 items-center justify-center rounded-full bg-green-100">
@@ -158,7 +167,6 @@ export default function LoginPortal() {
           </div>
         )}
 
-        {/* Redirecting */}
         {stage === "redirecting" && destination && (
           <div className="flex flex-col items-center gap-4 py-6">
             <div className="flex h-14 w-14 items-center justify-center rounded-full bg-green-100">
