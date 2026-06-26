@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Wifi,
   Zap,
@@ -215,42 +215,37 @@ function Features() {
   );
 }
 
-type Plan = {
+interface ApiPlan {
+  id: number;
   name: string;
-  speed: string;
-  home: number;
-  business: number;
-  features: string[];
-  popular?: boolean;
-};
-
-const PLANS: Plan[] = [
-  {
-    name: "Starter",
-    speed: "15 Mbps",
-    home: 2500,
-    business: 4500,
-    features: ["Unlimited data", "Free Wi-Fi router", "1–2 devices", "Email support"],
-  },
-  {
-    name: "Family",
-    speed: "30 Mbps",
-    home: 3500,
-    business: 6500,
-    features: ["Unlimited data", "Free Wi-Fi router", "Up to 10 devices", "Priority support", "HD streaming"],
-    popular: true,
-  },
-  {
-    name: "Pro",
-    speed: "100 Mbps",
-    home: 6500,
-    business: 11500,
-    features: ["Unlimited data", "Mesh router included", "Unlimited devices", "24/7 dedicated support", "Static IP option"],
-  },
-];
+  speed_down_mbps: number;
+  price: string;
+  category: string | null;
+  features: string | null;
+  plan_type: string;
+}
 
 function Plans() {
   const [type, setType] = useState<"home" | "business">("home");
+  const [allPlans, setAllPlans] = useState<ApiPlan[]>([]);
+  const [loadingPlans, setLoadingPlans] = useState(true);
+
+  useEffect(() => {
+    fetch("https://api.eyefi.co.ke/plans/public")
+      .then(r => r.json())
+      .then((data: ApiPlan[]) => {
+        setAllPlans(data.filter(p => p.plan_type === "pppoe" && p.category));
+      })
+      .catch(() => {})
+      .finally(() => setLoadingPlans(false));
+  }, []);
+
+  const plans = allPlans.filter(p => p.category === type);
+  const withPopular = plans.map((p, i) => ({
+    ...p,
+    popular: plans.length === 3 && i === 1,
+  }));
+
   return (
     <section id="plans" className="bg-isp-50/60 py-24">
       <div className="mx-auto max-w-6xl px-5">
@@ -276,51 +271,63 @@ function Plans() {
           </div>
         </div>
 
-        <div className="mt-12 grid gap-6 lg:grid-cols-3">
-          {PLANS.map((p) => (
-            <div
-              key={p.name}
-              className={`relative flex flex-col rounded-2xl border bg-white p-7 transition-transform hover:-translate-y-1 ${
-                p.popular
-                  ? "border-isp-600 shadow-glow lg:-mt-4 lg:mb-4"
-                  : "border-isp-100 shadow-card"
-              }`}
-            >
-              {p.popular && (
-                <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-isp-600 px-3 py-1 text-xs font-bold text-white">
-                  Most Popular
-                </span>
-              )}
-              <h3 className="text-lg font-bold text-isp-900">{p.name}</h3>
-              <p className="mt-1 text-sm font-semibold text-isp-600">{p.speed}</p>
-              <div className="mt-5 flex items-end gap-1">
-                <span className="text-sm font-semibold text-[#6b7280]">KSh</span>
-                <span className="text-4xl font-extrabold text-isp-900">
-                  {(type === "home" ? p.home : p.business).toLocaleString()}
-                </span>
-                <span className="mb-1 text-sm text-[#9ca3af]">/mo</span>
-              </div>
-              <ul className="mt-6 space-y-3">
-                {p.features.map((f) => (
-                  <li key={f} className="flex items-start gap-2.5 text-sm text-[#374151]">
-                    <Check className="mt-0.5 h-4 w-4 shrink-0 text-isp-600" />
-                    {f}
-                  </li>
-                ))}
-              </ul>
-              <a
-                href="#cta"
-                className={`mt-7 inline-flex w-full items-center justify-center rounded-xl px-4 py-3 text-sm font-bold transition-transform hover:scale-[1.02] ${
+        {loadingPlans ? (
+          <div className="mt-12 text-center text-sm text-[#6b7280]">Loading plans...</div>
+        ) : withPopular.length === 0 ? (
+          <div className="mt-12 text-center text-sm text-[#6b7280]">
+            No {type} plans available yet. Check back soon.
+          </div>
+        ) : (
+          <div className={`mt-12 grid gap-6 ${withPopular.length === 1 ? "max-w-sm mx-auto" : withPopular.length === 2 ? "lg:grid-cols-2 max-w-2xl mx-auto" : "lg:grid-cols-3"}`}>
+            {withPopular.map((p) => (
+              <div
+                key={p.id}
+                className={`relative flex flex-col rounded-2xl border bg-white p-7 transition-transform hover:-translate-y-1 ${
                   p.popular
-                    ? "bg-isp-600 text-white shadow-card"
-                    : "border border-isp-200 text-isp-700 hover:bg-isp-50"
+                    ? "border-isp-600 shadow-glow lg:-mt-4 lg:mb-4"
+                    : "border-isp-100 shadow-card"
                 }`}
               >
-                Choose {p.name}
-              </a>
-            </div>
-          ))}
-        </div>
+                {p.popular && (
+                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-isp-600 px-3 py-1 text-xs font-bold text-white">
+                    Most Popular
+                  </span>
+                )}
+                <h3 className="text-lg font-bold text-isp-900">{p.name}</h3>
+                <p className="mt-1 text-sm font-semibold text-isp-600">
+                  {p.speed_down_mbps} Mbps
+                </p>
+                <div className="mt-5 flex items-end gap-1">
+                  <span className="text-sm font-semibold text-[#6b7280]">KSh</span>
+                  <span className="text-4xl font-extrabold text-isp-900">
+                    {parseFloat(p.price).toLocaleString()}
+                  </span>
+                  <span className="mb-1 text-sm text-[#9ca3af]">/mo</span>
+                </div>
+                {p.features && (
+                  <ul className="mt-6 space-y-3 flex-1">
+                    {p.features.split("\n").filter(Boolean).map((f) => (
+                      <li key={f} className="flex items-start gap-2.5 text-sm text-[#374151]">
+                        <Check className="mt-0.5 h-4 w-4 shrink-0 text-isp-600" />
+                        {f.trim()}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+                <a
+                  href="#cta"
+                  className={`mt-7 inline-flex w-full items-center justify-center rounded-xl px-4 py-3 text-sm font-bold transition-transform hover:scale-[1.02] ${
+                    p.popular
+                      ? "bg-isp-600 text-white shadow-card"
+                      : "border border-isp-200 text-isp-700 hover:bg-isp-50"
+                  }`}
+                >
+                  Choose {p.name}
+                </a>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );
